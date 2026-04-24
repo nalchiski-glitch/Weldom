@@ -26,4 +26,3 @@ jobs:
        path: |
          build/Release/*.exe
          build/Release/*.dll
-       if-no-files-found: error

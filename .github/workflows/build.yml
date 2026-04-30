@@ -1,39 +1,31 @@
 
 name: Build SFML Game
-
 on:
  push:
-   branches: [ "main" ]
+   branches: ["main"]
  workflow_dispatch:
-
 jobs:
  build:
    runs-on: windows-latest
    steps:
-     - name: Checkout code
-       uses: actions/checkout@v4
-
+     - uses: actions/checkout@v4
      - name: Download SFML
-       shell: pwsh
+       shell: cmd
        run: |
-         Invoke-WebRequest -Uri "https://www.sfml-dev.org/files/SFML-2.6.1-windows-vc17-64-bit.zip" -OutFile "sfml.zip"
-         Expand-Archive -Path sfml.zip -DestinationPath C:\SFML
-
-     - name: Configure CMake
+         curl -L -o sfml.zip https://www.sfml-dev.org/files/SFML-2.6.1-windows-vc17-64-bit.zip
+         powershell Expand-Archive -Path sfml.zip -DestinationPath C:\SFML
+     - name: Configure
        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DSFML_DIR=C:\SFML\SFML-2.6.1\lib\cmake\SFML
-
      - name: Build
        run: cmake --build build --config Release
-
      - name: Package
-       shell: pwsh
+       shell: cmd
        run: |
-         New-Item -ItemType Directory -Path package -Force
-         Copy-Item build\Release\*.exe package\
-         Copy-Item build\Release\*.dll package\
-         Copy-Item *.png package\
-         Copy-Item C:\SFML\SFML-2.6.1\bin\*.dll package\
-
+         mkdir package
+         copy build\Release\Weldom.exe package\
+         copy build\Release\*.dll package\
+         copy *.png package\
+         copy C:\SFML\SFML-2.6.1\bin\*.dll package\
      - name: Upload
        uses: actions/upload-artifact@v4
        with:

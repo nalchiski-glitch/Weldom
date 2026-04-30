@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(Weldom)
-
 set(CMAKE_CXX_STANDARD 17)
-
-find_package(SFML 3.0 COMPONENTS graphics window system REQUIRED)
-
+find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 add_executable(Weldom main.cpp)
 target_link_libraries(Weldom sfml-graphics sfml-window sfml-system)

@@ -1,4 +1,4 @@
-name: Build EXE
+name: Build SFML Game
 
 on:
  push:
@@ -13,29 +13,28 @@ jobs:
    - name: Checkout code
      uses: actions/checkout@v4
 
-   - name: Install SFML
+   - name: Download SFML
      run: |
-       curl -L -o sfml.zip https://github.com/SFML/SFML/releases/download/3.0.0/SFML-3.0.0-windows-vc17-x64.zip
-       tar -xf sfml.zip -C C:\
-       echo "SFML_DIR=C:\SFML-3.0.0\lib\cmake\SFML" >> $env:GITHUB_ENV
-       echo "C:\SFML-3.0.0\bin" >> $env:GITHUB_PATH
+       Invoke-WebRequest -Uri "https://www.sfml-dev.org/files/SFML-2.6.1-windows-vc17-64-bit.zip" -OutFile "sfml.zip"
+       Expand-Archive -Path sfml.zip -DestinationPath C:\SFML
+       echo "C:\SFML\SFML-2.6.1\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
    - name: Configure CMake
-     run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+     run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DSFML_DIR=C:\SFML\SFML-2.6.1\lib\cmake\SFML
 
    - name: Build
      run: cmake --build build --config Release
 
-   - name: Package EXE
+   - name: Package
      run: |
-       mkdir package
-       copy build\Release\*.exe package\
-       copy build\Release\*.dll package\
-       copy *.png package\
-       copy C:\SFML-3.0.0\bin\*.dll package\
+       New-Item -ItemType Directory -Path package -Force
+       Copy-Item build\Release\*.exe package\
+       Copy-Item build\Release\*.dll package\
+       Copy-Item *.png package\
+       Copy-Item C:\SFML\SFML-2.6.1\bin\*.dll package\
 
-   - name: Upload artifact
+   - name: Upload
      uses: actions/upload-artifact@v4
      with:
-       name: Weldom-Game
+       name: Weldom
        path: package\

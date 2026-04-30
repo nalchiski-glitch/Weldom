@@ -12,8 +12,8 @@ jobs:
      - name: Download SFML
        shell: cmd
        run: |
-         https://www.sfml-dev.org/files/SFML-2.6.1-windows-vc17-64-bit.zip
-         powershell Expand-Archive -Path sfml.zip -DestinationPath C:\SFML-3.0.0
+         curl -L -o sfml.zip https://www.sfml-dev.org/files/SFML-2.6.1-windows-vc17-64-bit.zip
+         powershell Expand-Archive -Path sfml.zip -DestinationPath C:\SFML
      - name: Configure
        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DSFML_DIR=C:\SFML\SFML-2.6.1\lib\cmake\SFML
      - name: Build

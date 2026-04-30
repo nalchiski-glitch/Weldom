@@ -1,10 +1,9 @@
-name: Build Weldom_Prototype
+name: Build EXE
 
 on:
  push:
-   branches: [ main ]
- pull_request:
-   branches: [ main ]
+   branches: [ "main" ]
+ workflow_dispatch:
 
 jobs:
  build:
@@ -14,19 +13,29 @@ jobs:
    - name: Checkout code
      uses: actions/checkout@v4
 
-   - name: Setup CMake
-     uses: lukka/get-cmake@latest
+   - name: Install SFML
+     run: |
+       curl -L -o sfml.zip https://github.com/SFML/SFML/releases/download/3.0.0/SFML-3.0.0-windows-vc17-x64.zip
+       tar -xf sfml.zip -C C:\
+       echo "SFML_DIR=C:\SFML-3.0.0\lib\cmake\SFML" >> $env:GITHUB_ENV
+       echo "C:\SFML-3.0.0\bin" >> $env:GITHUB_PATH
 
    - name: Configure CMake
-     run: cmake -B build -G "Visual Studio 17 2022" -A x64
+     run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
    - name: Build
      run: cmake --build build --config Release
 
-   - name: Upload EXE
+   - name: Package EXE
+     run: |
+       mkdir package
+       copy build\Release\*.exe package\
+       copy build\Release\*.dll package\
+       copy *.png package\
+       copy C:\SFML-3.0.0\bin\*.dll package\
+
+   - name: Upload artifact
      uses: actions/upload-artifact@v4
      with:
-       name: Weldom_Prototype_Build
-       path: |
-         build/Release/*.exe
-         build/Release/*.dll
+       name: Weldom-Game
+       path: package\

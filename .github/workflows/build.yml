@@ -15,7 +15,7 @@ jobs:
          curl -L -o sfml.zip https://www.sfml-dev.org/files/SFML-3.0.0-windows-vc17-64-bit.zip
          powershell Expand-Archive -Path sfml.zip -DestinationPath C:\SFML
      - name: Configure
-       run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DSFML_DIR=C:\SFML\SFML-2.6.1\lib\cmake\SFML
+       run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DSFML_DIR=C:\SFML\SFML-3.0.0\lib\cmake\SFML
      - name: Build
        run: cmake --build build --config Release
      - name: Package
@@ -25,7 +25,7 @@ jobs:
          copy build\Release\Weldom.exe package\
          copy build\Release\*.dll package\
          copy *.png package\
-         copy C:\SFML\SFML-2.6.1\bin\*.dll package\
+         copy C:\SFML\SFML-3.0.0\bin\*.dll package\
      - name: Upload
        uses: actions/upload-artifact@v4
        with:
